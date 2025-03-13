@@ -15,6 +15,9 @@ window.onload = function() {
     let birdCurrentFrame = 0;
     let birdCanvasPositionX = 350;
     let birdCanvasPositionY = 200;
+    let birdVerticalSpeed = 0;
+    let birdDrop = 2;
+    let birdLift = -10;
     let backgroundShift = 0;
     let backgroundFrameWidth = 800;
     let backgroundFrameHeight = 500;
@@ -22,8 +25,23 @@ window.onload = function() {
     let backgroundCurrentFrame = 0;
     let backgroundCanvasPositionX = 0;
     let backgroundCanvasPositionY = 0;
+    document.addEventListener('keydown', function(e) {
+        if (e.code === 'Space') {
+            birdVerticalSpeed = birdLift;
+        }
+    });
     function Animation() {
         setInterval(function() {
+            birdVerticalSpeed += birdDrop;
+            birdCanvasPositionY += birdVerticalSpeed;
+            if (birdCanvasPositionY > canvas.height - birdFrameHeight) {
+                birdCanvasPositionY = canvas.height - birdFrameHeight;
+                birdVerticalSpeed = 0;
+            };
+            if (birdCanvasPositionY < 0) {
+                birdCanvasPositionY = 0;
+                birdVerticalSpeed = 0;
+            };
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.drawImage(background, 0, backgroundShift, backgroundFrameWidth, backgroundFrameHeight, backgroundCanvasPositionX, backgroundCanvasPositionY, backgroundFrameWidth, backgroundFrameHeight);
             backgroundShift += backgroundFrameHeight;
