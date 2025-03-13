@@ -28,18 +28,6 @@ Flappy Burb is a browser-based game inspired by the classic Flappy Bird. The pla
 - Balloons (air obstacles)
 - Animated background
 
-## Project Structure
-```
-FlappyBurb/
-├── index.html       # Game HTML structure
-├── script.js        # Game logic and mechanics
-├── style.css        # Basic styling
-└── assets/          # Game images
-    ├── background.png
-    ├── balloon.png
-    ├── birdy.png
-    └── treeTrunk.png
-```
-
 ## Getting Started
 Simply go to <a href="https://your-friendly-neighborhood-programmer.github.io/FlappyBurb/">this link</a> or open the `index.html` file in your web browser to play the game.
+
