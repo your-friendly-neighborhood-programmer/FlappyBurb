@@ -11,6 +11,7 @@ document.addEventListener('keydown', function(e) {
     if (e.code = 'Space') {
         bird.flap = true;
         paused = false;
+        e.preventDefault();
     }
 });
 
