@@ -5,12 +5,20 @@ let lastDelta = 0;
 let paused = true;
 let score = 0;
 let highScore = 0;
+let gameStarted = false; // Flag to track if game has started
 
 // Player controls
 document.addEventListener('keydown', function(e) {
-    if (e.code = 'Space') {
+    if (e.code === 'Space') { // Fixed equality operator here
         bird.flap = true;
-        paused = false;
+        
+        if (!gameStarted) {
+            gameStarted = true;
+            paused = false;
+        } else {
+            paused = false;
+        }
+        
         e.preventDefault();
     }
 });
@@ -123,12 +131,20 @@ const bird = new Player('bird', './assets/birdy.png', 100, 100, 2, 350, 200, 100
 function gameLoop(timestamp) {
     let deltaTime = (timestamp - lastTime);
     lastTime = timestamp;
-    update(deltaTime);
-    draw(deltaTime);
-    requestAnimationFrame(gameLoop);
-    if (bird.collidingWith(treeTrunk) || bird.collidingWith(balloon) || bird.bottom() > canvas.height) {
-        gameOver();
+    
+    // Check if game hasn't started yet to display opening screen
+    if (!gameStarted) {
+        drawOpeningScreen();
+    } else {
+        update(deltaTime);
+        draw(deltaTime);
+        
+        if (bird.collidingWith(treeTrunk) || bird.collidingWith(balloon) || bird.bottom() > canvas.height) {
+            gameOver();
+        }
     }
+    
+    requestAnimationFrame(gameLoop);
 };
 
 // Updates the game logic
@@ -153,9 +169,47 @@ function draw(deltaTime) {
     ctx.fillText("High score: " + Math.floor(highScore / 10), 20, 40);
 };
 
+// Draw opening screen
+function drawOpeningScreen() {
+    // Draw background for opening screen
+    background.draw();
+    
+    // Draw bird in a static position
+    bird.draw();
+    
+    // Set up text style
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#673ab7";
+    ctx.shadowColor = "#ff5722";
+    ctx.shadowBlur = 5;
+    ctx.shadowOffsetX = 4;
+    ctx.shadowOffsetY = 4;
+    
+    // Draw game title
+    ctx.font = "40px 'Press Start 2P'";
+    ctx.fillText("FLAPPY BURB", canvas.width / 2, canvas.height / 3);
+    
+    // Draw instructions
+    ctx.font = "20px 'Press Start 2P'";
+    ctx.fillText("Press SPACE to start", canvas.width / 2, canvas.height / 2);
+    ctx.font = "16px 'Press Start 2P'";
+    ctx.fillText("Use SPACE to flap wings", canvas.width / 2, canvas.height / 2 + 40);
+    
+    // Draw high score
+    ctx.font = "16px 'Press Start 2P'";
+    ctx.fillText("High Score: " + Math.floor(highScore / 10), canvas.width / 2, canvas.height * 0.75);
+    
+    // Reset shadow
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
+    ctx.textAlign = "left";
+}
+
 // Game over function 
 function gameOver() {
     paused = true;
+    gameStarted = false; // Reset game state
     background.reset();
     treeTrunk.reset();
     balloon.reset();
@@ -164,5 +218,6 @@ function gameOver() {
     score = 0;
     localStorage.setItem("High Score", highScore);
 }
+
 highScore = localStorage.getItem("High Score") || 0;
 requestAnimationFrame(gameLoop);
